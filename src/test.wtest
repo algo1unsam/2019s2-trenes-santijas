@@ -1,0 +1,72 @@
+import trenes.*
+
+describe "Bateria de tests"{
+	
+	const deposito1 = new Deposito()
+	const formacion1 = new Formacion()
+	const vagon1 = new Vagon(anchoUtil= 30, largo = 30, tipoVagon = new VagonCarga(cargaMax = 15000))
+	const vagon2 = new Vagon(anchoUtil= 7, largo = 4, tipoVagon = vagonPasajeros)
+	const vagon3 = new Vagon(anchoUtil= 5, largo = 9, tipoVagon = new VagonCarga(cargaMax = 12000))
+	
+	const formacion2 = new Formacion()
+	const vagon4 = new Vagon(anchoUtil= 4, largo = 14, tipoVagon = new VagonCarga(cargaMax = 5000))
+	const vagon5 = new Vagon(anchoUtil= 9, largo = 19, tipoVagon = vagonPasajeros)
+	const vagon6 = new Vagon(anchoUtil= 18, largo = 39, tipoVagon = vagonPasajeros)
+	
+	const locomotora1 = new Locomotora(peso= 1000, pesoMaximoLlevado = 70000, velMax = 500)
+	const locomotora2 = new Locomotora(peso= 1500, pesoMaximoLlevado = 25000, velMax = 250)
+	
+	const locomotora3 = new Locomotora(peso= 2500, pesoMaximoLlevado = 150000, velMax = 500)
+	const locomotora4 = new Locomotora(peso= 3500, pesoMaximoLlevado = 2000, velMax = 250)
+	
+	
+	fixture{
+		deposito1.formaciones().add(formacion1)
+		formacion1.vagones().add(vagon1)
+		formacion1.vagones().add(vagon2)
+		formacion1.vagones().add(vagon3)
+		formacion1.locomotoras().add(locomotora1)
+		formacion1.locomotoras().add(locomotora2)
+		
+		deposito1.formaciones().add(formacion2)
+		formacion2.vagones().add(vagon4)
+		formacion2.vagones().add(vagon5)
+		formacion2.vagones().add(vagon6)
+		formacion2.locomotoras().add(locomotora3)
+		formacion2.locomotoras().add(locomotora4)
+	
+	}
+
+
+test "Vagones" {
+
+assert.that(formacion1.vagones().contains(vagon1))
+assert.that(formacion2.vagones().contains(vagon4))
+assert.equals(vagon1.cantidadPasajeros(),0)
+assert.equals(vagon2.cantidadPasajeros(),40)
+assert.equals(vagon1.pesoMaximo(), 15160)
+assert.equals(vagon2.pesoMaximo(), 3200)
+
+	
+}
+
+test "Formacion"{
+assert.equals(formacion1.eficiente(),true)
+assert.equals(formacion1.velocidadMaxima(),250)
+assert.equals(formacion2.eficiente(),false)
+
+
+
+
+
+}
+
+test "Deposito"{
+	
+assert.equals(deposito1.vagonesMasPesados().contains(vagon6), true)
+assert.equals(deposito1.vagonesMasPesados().contains(vagon1), true)
+
+
+}
+
+}
