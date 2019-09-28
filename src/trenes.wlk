@@ -3,10 +3,6 @@ class Deposito{
 	const property locomotorasSueltas = []
 	
 	method vagonesMasPesados(){
-		//const lista = []
-		//lista.add( formaciones.all({ formacion => formacion.vagones().max({ vagon => vagon.pesoMaximo()}) }))
-		//return lista 
-		
 		return formaciones.map({ formacion => formacion.vagones().max({vagon => vagon.pesoMaximo()} )})
 	
 	}
@@ -21,19 +17,23 @@ class Deposito{
 	}
 	
 	method formacionComplejaPorPeso(){
-		return true // VER LUEGO
+		return formaciones.any({ formacion => (formacion.pesoVagonesYLocomotoras() > 10000)  })
 	}
 	
 	method agregaLocomotora(formacion){
 		if (not(formacion.puedeMoverse())){
-			formacion.locomotoras().add(self.locomotoraPorAgregar())
+			var locomotora = self.locomotoraPorAgregar(formacion)
+			formacion.locomotoras().add(locomotora)
+			self.locomotorasSueltas().remove(locomotora)
 		} 
 	}
 	
-	method locomotoraPorAgregar(){
-		return formaciones.any({f => f.kilosFaltantes()< locomotorasSueltas.arrastreUtil()}).first()
-			
-}
+	method locomotoraPorAgregar(formacionAgregada){
+		
+		return locomotorasSueltas.filter({ locomotora => locomotora.arrastreUtil() > formacionAgregada.kilosFaltantes() }).first()
+			}
+
+	
 }
 
 
@@ -42,7 +42,7 @@ class Formacion{
 	const property locomotoras = []
 	
 	method vagonesLivianos(){
-		return vagones.filter({vagon => vagon.pesoMaximo()<2500})
+		return vagones.count({vagon => vagon.pesoMaximo()<2500})
 	}
 	
 	method velocidadMaxima(){
@@ -61,8 +61,12 @@ class Formacion{
 		if (self.puedeMoverse()){ 
 			return 0
 		}else {
-			return vagones.sum(vagones.pesoMaximo()) - locomotoras.sum({ locomotoras.arrastreUtil()})
+			return vagones.sum({vagon => vagon.pesoMaximo()}) - locomotoras.sum({ locomotora => locomotora.arrastreUtil()})
 		}
+	}
+	
+	method pesoVagonesYLocomotoras(){
+		return vagones.sum({vagon => vagon.pesoMaximo()}) + locomotoras.sum({locomotora => locomotora.peso()})
 	}
 }
 

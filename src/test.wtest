@@ -6,12 +6,12 @@ describe "Bateria de tests"{
 	const formacion1 = new Formacion()
 	const vagon1 = new Vagon(anchoUtil= 30, largo = 30, tipoVagon = new VagonCarga(cargaMax = 15000))
 	const vagon2 = new Vagon(anchoUtil= 7, largo = 4, tipoVagon = vagonPasajeros)
-	const vagon3 = new Vagon(anchoUtil= 5, largo = 9, tipoVagon = new VagonCarga(cargaMax = 12000))
+	const vagon3 = new Vagon(anchoUtil= 1, largo = 1, tipoVagon = new VagonCarga(cargaMax = 1200))
 	
 	const formacion2 = new Formacion()
 	const vagon4 = new Vagon(anchoUtil= 4, largo = 14, tipoVagon = new VagonCarga(cargaMax = 5000))
 	const vagon5 = new Vagon(anchoUtil= 9, largo = 19, tipoVagon = vagonPasajeros)
-	const vagon6 = new Vagon(anchoUtil= 18, largo = 39, tipoVagon = vagonPasajeros)
+	const vagon6 = new Vagon(anchoUtil= 1, largo = 3, tipoVagon = vagonPasajeros)
 	
 	const locomotora1 = new Locomotora(peso= 1000, pesoMaximoLlevado = 70000, velMax = 500)
 	const locomotora2 = new Locomotora(peso= 1500, pesoMaximoLlevado = 25000, velMax = 250)
@@ -19,6 +19,7 @@ describe "Bateria de tests"{
 	const locomotora3 = new Locomotora(peso= 2500, pesoMaximoLlevado = 1500, velMax = 900)
 	const locomotora4 = new Locomotora(peso= 3500, pesoMaximoLlevado = 2000, velMax = 360)
 	
+	const locomotora5 = new Locomotora(peso= 3500, pesoMaximoLlevado = 45000, velMax = 360)
 	
 	fixture{
 		deposito1.formaciones().add(formacion1)
@@ -34,7 +35,8 @@ describe "Bateria de tests"{
 		formacion2.vagones().add(vagon6)
 		formacion2.locomotoras().add(locomotora3)
 		formacion2.locomotoras().add(locomotora4)
-	
+		
+		deposito1.locomotorasSueltas().add(locomotora5)
 	}
 
 
@@ -46,11 +48,13 @@ assert.equals(vagon2.cantidadPasajeros(),40)
 assert.equals(vagon1.pesoMaximo(), 15160)
 assert.equals(vagon2.pesoMaximo(), 3200)
 
+
 	
 }
 
 test "Formacion"{
-//Existen elementos
+	
+//Existencia de elementos
 assert.that(formacion1.vagones().contains(vagon1))
 assert.that(formacion2.vagones().contains(vagon4))
 
@@ -58,21 +62,44 @@ assert.that(formacion2.vagones().contains(vagon4))
 assert.that(formacion1.eficiente())
 assert.equals(formacion1.velocidadMaxima(),250)
 assert.that(formacion1.puedeMoverse())
-assert.notThat(formacion1.vagonesLivianos().contains(vagon3))
+assert.equals(formacion1.vagonesLivianos(),1)
+assert.equals(formacion1.kilosFaltantes(), 0)
+assert.equals(formacion1.pesoVagonesYLocomotoras(), 22220)
+
+
 
 //Formacion2
 assert.notThat(formacion2.eficiente())
 assert.equals(formacion2.velocidadMaxima(),360)
 assert.notThat(formacion2.puedeMoverse())
+assert.equals(formacion2.vagonesLivianos(),1)
+assert.equals(formacion2.kilosFaltantes(), 22280)
 
 }
 
 test "Deposito"{
+	//En formacion1
+
+assert.that(deposito1.vagonesMasPesados().contains(vagon1))
+assert.notThat(deposito1.vagonesMasPesados().contains(vagon3))
+
+	//En Formacion2
 	
-assert.equals(deposito1.vagonesMasPesados().contains(vagon6), true)
-assert.equals(deposito1.vagonesMasPesados().contains(vagon1), true)
+assert.notThat(deposito1.vagonesMasPesados().contains(vagon6))
+assert.that(deposito1.vagonesMasPesados().contains(vagon1))
+
+assert.that(deposito1.locomotorasSueltas().contains(locomotora5))
+deposito1.agregaLocomotora(formacion1)
+assert.that(deposito1.locomotorasSueltas().contains(locomotora5)) // Persiste porque ya puede moverse.
 
 
+deposito1.agregaLocomotora(formacion2)
+
+assert.notThat(deposito1.locomotorasSueltas().contains(locomotora5)) // No persiste ya que se agrega la locomotora
+assert.that(formacion2.locomotoras().contains(locomotora5)) //Agregada en lista locomotoras
+
+
+assert.that(deposito1.conductorExperimentado())
 }
 
 }
