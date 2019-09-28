@@ -16,8 +16,8 @@ describe "Bateria de tests"{
 	const locomotora1 = new Locomotora(peso= 1000, pesoMaximoLlevado = 70000, velMax = 500)
 	const locomotora2 = new Locomotora(peso= 1500, pesoMaximoLlevado = 25000, velMax = 250)
 	
-	const locomotora3 = new Locomotora(peso= 2500, pesoMaximoLlevado = 150000, velMax = 500)
-	const locomotora4 = new Locomotora(peso= 3500, pesoMaximoLlevado = 2000, velMax = 250)
+	const locomotora3 = new Locomotora(peso= 2500, pesoMaximoLlevado = 1500, velMax = 900)
+	const locomotora4 = new Locomotora(peso= 3500, pesoMaximoLlevado = 2000, velMax = 360)
 	
 	
 	fixture{
@@ -40,8 +40,7 @@ describe "Bateria de tests"{
 
 test "Vagones" {
 
-assert.that(formacion1.vagones().contains(vagon1))
-assert.that(formacion2.vagones().contains(vagon4))
+
 assert.equals(vagon1.cantidadPasajeros(),0)
 assert.equals(vagon2.cantidadPasajeros(),40)
 assert.equals(vagon1.pesoMaximo(), 15160)
@@ -51,13 +50,20 @@ assert.equals(vagon2.pesoMaximo(), 3200)
 }
 
 test "Formacion"{
-assert.equals(formacion1.eficiente(),true)
+//Existen elementos
+assert.that(formacion1.vagones().contains(vagon1))
+assert.that(formacion2.vagones().contains(vagon4))
+
+//Formacion1
+assert.that(formacion1.eficiente())
 assert.equals(formacion1.velocidadMaxima(),250)
-assert.equals(formacion2.eficiente(),false)
+assert.that(formacion1.puedeMoverse())
+assert.notThat(formacion1.vagonesLivianos().contains(vagon3))
 
-
-
-
+//Formacion2
+assert.notThat(formacion2.eficiente())
+assert.equals(formacion2.velocidadMaxima(),360)
+assert.notThat(formacion2.puedeMoverse())
 
 }
 

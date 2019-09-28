@@ -42,7 +42,7 @@ class Formacion{
 	const property locomotoras = []
 	
 	method vagonesLivianos(){
-		return vagones.filter({vagon => vagones.pesoMaximo()<2500})
+		return vagones.filter({vagon => vagon.pesoMaximo()<2500})
 	}
 	
 	method velocidadMaxima(){
